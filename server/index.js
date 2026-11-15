@@ -11,6 +11,12 @@ const __dirname = path.dirname(__filename);         // 전체 파일 경로에�
 
 // 환경변수 및 Express 앱 초기화
 dotenv.config();                                    // .env 파일에 저장된 설정값들을 process.env로 불러옵
+
+if (!process.env.JWT_SECRET) {
+  console.error('❌ 서버 시작 실패: server/.env 에 JWT_SECRET 을 설정하세요.');
+  process.exit(1);
+}
+
 const app = express();
 const PORT = process.env.PORT || 5000;                      // .env 파일에 PORT 지정이 없으면 기본값 5000번 포트를 사용하도록 우선순위를 부여함
 

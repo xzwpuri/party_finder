@@ -12,7 +12,7 @@
 
 ## 실행 방법
 1. MySQL 에서 `server/schema.sql` 실행 (DB 이름: `party_finder_20511`)
-2. `server/.env.example` 을 복사해 `server/.env` 만들고 DB 정보 입력
+2. `server/.env.example` 을 복사해 `server/.env` 만들고 `DB_USER`, `DB_PASSWORD` 를 사용 중인 MySQL 계정 값으로 수정 (`.env` 는 깃에 올라가지 않음, `JWT_SECRET` 필수)
 3. 서버: `cd server && npm install && npm run dev`  (http://localhost:5000)
 4. 클라이언트: `cd client && npm install && npm run dev`  (http://localhost:5173)
 

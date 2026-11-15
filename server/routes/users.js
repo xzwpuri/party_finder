@@ -27,7 +27,7 @@ router.post('/signup', async (req, res) => {
     const userId = result.insertId;
     const token = jwt.sign(
       { id: userId, email, nickname },
-      process.env.JWT_SECRET ?? 'fallback_secret_key',
+      process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
 
@@ -76,7 +76,7 @@ router.post('/login', async (req, res) => {
 
     const token = jwt.sign(
       { id: user.id, email: user.email, nickname: user.nickname },
-      process.env.JWT_SECRET ?? 'fallback_secret_key',
+      process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
 
@@ -123,10 +123,23 @@ router.get('/me', authenticateToken, async (req, res) => {
 router.put('/me', authenticateToken, async (req, res) => {
   try {
     const userId = req.user?.id || req.user?.userId || req.user?.user_id;
-    const { currentPassword, nickname, phone_number, student_id } = req.body;
+    const { currentPassword } = req.body;
+    const nickname = (req.body.nickname || '').trim();
+    const phone_number = (req.body.phone_number || '').trim();
+    const student_id = String(req.body.student_id || '').trim();
 
     if (!userId) {
       return res.status(400).json({ message: '유효하지 않은 토큰 정보입니다.' });
+    }
+
+    if (!currentPassword) {
+      return res.status(400).json({ message: '현재 비밀번호를 입력해 주세요.' });
+    }
+    if (!nickname || !phone_number || !student_id) {
+      return res.status(400).json({ message: '닉네임, 전화번호, 학번은 비워둘 수 없습니다.' });
+    }
+    if (nickname.length > 50 || phone_number.length > 20 || student_id.length > 10) {
+      return res.status(400).json({ message: '입력값이 너무 깁니다.' });
     }
 
     // 💡 DB에서 현재 비밀번호 조회
@@ -153,6 +166,9 @@ router.put('/me', authenticateToken, async (req, res) => {
 
     res.json({ message: '프로필 정보가 성공적으로 수정되었습니다.' });
   } catch (error) {
+    if (error.code === 'ER_DUP_ENTRY') {
+      return res.status(409).json({ message: '이미 사용 중인 전화번호입니다.' });
+    }
     console.error('❌ PUT /api/users/me 500 에러 발생:', error);
     res.status(500).json({ message: '프로필 수정 중 서버 오류가 발생했습니다.' });
   }
