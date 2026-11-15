@@ -50,6 +50,7 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
       
       <NavGroup>
         <JoinLink onClick={() => navigate('/join')}>모집자별 현황</JoinLink>
+        <JoinLink onClick={() => navigate('/join/stats')}>활동 통계</JoinLink>
         <WriteButton onClick={handleWriteClick}>+ 파티 만들기</WriteButton>
 
         {isLoggedIn && (

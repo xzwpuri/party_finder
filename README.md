@@ -7,7 +7,8 @@
 |---|---|
 | 회원관리 (users) | 회원가입(bcrypt 암호화), 로그인(JWT), 프로필 조회/수정, 회원 탈퇴 |
 | 핵심 데이터 (parties) | 모집글 등록(로그인 필수) · 전체 목록(누구나) · 수정/삭제(본인만) · 모집 상태 변경(모집중/모집완료/종료) |
-| JOIN 메뉴 | 상단 "모집자별 현황" → `parties INNER JOIN users` 결과 표 |
+| JOIN 메뉴 1 | 상단 "모집자별 현황" → `parties INNER JOIN users` 결과 표 |
+| JOIN 메뉴 2 | 상단 "활동 통계" → `users LEFT JOIN parties` + `GROUP BY` 회원별 모집글 수 집계 |
 
 ## 실행 방법
 1. MySQL 에서 `server/schema.sql` 실행 (DB 이름: `party_finder_20511`)
@@ -23,6 +24,7 @@
 | GET/PUT/DELETE | /api/users/me | 프로필 조회/수정/탈퇴 | 필요 |
 | GET | /api/parties | 전체 목록 (`?game=` 필터) | - |
 | GET | /api/parties/with-hosts | **JOIN 결과** (모집글 + 모집자) | - |
+| GET | /api/parties/host-stats | **JOIN 결과 2** (회원별 모집글 수 집계) | - |
 | GET | /api/parties/mine | 내 모집글 | 필요 |
 | GET | /api/parties/:id | 상세 | - |
 | POST | /api/parties | 등록 | 필요 |

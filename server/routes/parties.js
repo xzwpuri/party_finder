@@ -62,6 +62,27 @@ router.get('/with-hosts', async (req, res) => {
   }
 });
 
+// 2-2. [JOIN 메뉴 2] 모집자별 통계 (users LEFT JOIN parties + GROUP BY)
+// GET /api/parties/host-stats   (※ '/:id' 보다 먼저 선언해야 함)
+router.get('/host-stats', async (req, res) => {
+  try {
+    const [rows] = await db.query(
+      `SELECT u.id AS user_id, u.nickname, u.student_id, u.entry_year,
+              COUNT(p.id) AS party_count,
+              COALESCE(SUM(p.status = 'OPEN'), 0) AS open_count,
+              DATE_FORMAT(MAX(p.created_at), '%Y-%m-%d %H:%i') AS last_posted
+       FROM users u
+       LEFT JOIN parties p ON p.host_id = u.id
+       GROUP BY u.id, u.nickname, u.student_id, u.entry_year
+       ORDER BY party_count DESC, u.nickname ASC`
+    );
+    return res.json(rows);
+  } catch (error) {
+    console.error('모집자 통계 조회 에러:', error);
+    return res.status(500).json({ message: '서버 에러가 발생했습니다.' });
+  }
+});
+
 // 3. 내가 만든 모집글 (마이페이지)
 // GET /api/parties/mine
 router.get('/mine', authenticateToken, async (req, res) => {

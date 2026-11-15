@@ -9,6 +9,7 @@ import PartyFormPage from './pages/PartyFormPage'
 import PartyDetailPage from './pages/PartyDetailPage'
 import MyPartiesPage from './pages/MyPartiesPage'
 import JoinPage from './pages/JoinPage'
+import HostStatsPage from './pages/HostStatsPage'
 
 const App = () => {
   // 로컬 스토리지의 토큰 존재 여부로 초기 로그인 상태 설정
@@ -29,6 +30,7 @@ const App = () => {
         <Route path="/mypage/parties" element={<MyPartiesPage />} />
         {/* parties JOIN users 결과 조회 메뉴 */}
         <Route path="/join" element={<JoinPage />} />
+        <Route path="/join/stats" element={<HostStatsPage />} />
       </Route>
     </Routes>
   )
